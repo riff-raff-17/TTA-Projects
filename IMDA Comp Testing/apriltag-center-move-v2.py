@@ -10,38 +10,37 @@ got = ugot.UGOT()
 SPEED = 15
 SIDE_SPEED = 10
 
+def go_there():
+    got.mecanum_move_speed_times(0, 30, 50, 1)
+    got.mecanum_turn_speed_times(2, 45, 90, 2)
+
+def go_back():
+    got.mecanum_move_speed_times(1, 30, 50, 1)
+    got.mecanum_turn_speed_times(2, 45, 90, 2)
+    got.mecanum_move_speed_times(0, 30, 60, 1)
+    got.mechanical_clamp_release()
+
+
 def pick_up():
     got.mecanum_stop()
-    got.mechanical_joint_control(0, -20, -35, 500)
+    got.mechanical_joint_control(0, -20, -40, 500)
     time.sleep(1)
-    got.mechanical_clamp_close()               # grab object
+    got.mechanical_clamp_close()
     time.sleep(1)
     got.mechanical_joint_control(0, 30, 30, 500)
     time.sleep(1)
     if got.get_apriltag_total_info():
+        # Red background
         got.screen_display_background(3)
         got.mechanical_clamp_release()
         return False
     else:
+        # Green background
         got.screen_display_background(6)
-        got.mechanical_clamp_release()
         return True 
 
-
-def main():
-    # --------------------
-    # 1. Robot initialization
-    # --------------------
-    got.initialize('192.168.1.189')            # connect to robot
-    got.open_camera()                          # start camera
-    got.load_models(['apriltag_qrcode'])       # enable tag/QR detection
-    got.mechanical_joint_control(0, 0, -20, 500)  # position arm
-    got.mechanical_clamp_release()             # open gripper
-    got.screen_clear()
-
-    # --------------------
-    # 2. Seek-and-align loop
-    # --------------------
+def seek_code():
+    attempts = 2
     while True:
         frame = got.read_camera_data()
         if not frame:
@@ -55,10 +54,15 @@ def main():
             # distance: distance in meters to target
             _, cx, cy, h, w, _, distance, *_ = tags[0]
             if distance < 0.19:
-                if pick_up():
-                    break
+                if not pick_up():
+                    attempts += 1
                 else:
-                    got.mecanum_move_speed_times(1, 30, 20, 1)
+                    break
+
+                if attempts > 3:
+                    break
+
+                got.mecanum_move_speed_times(1, 30, 20, 1)
             # steer toward center
             if cx > 340:
                 got.mecanum_move_xyz(SIDE_SPEED, SPEED, 0)
@@ -88,11 +92,23 @@ def main():
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
-
-    # --------------------
-    # 3. Grasp & finish
-    # --------------------
+    got.mecanum_stop()
     cv2.destroyAllWindows()
+
+
+def main():
+    got.initialize('192.168.1.189')            # connect to robot
+    got.open_camera()                          # start camera
+    got.load_models(['apriltag_qrcode'])       # enable tag/QR detection
+    got.mechanical_joint_control(0, 0, -20, 500)  # position arm
+    got.mechanical_clamp_release()             # open gripper
+    got.screen_clear()
+
+    go_there()
+
+    seek_code()
+
+    go_back()
 
 
 if __name__ == "__main__":

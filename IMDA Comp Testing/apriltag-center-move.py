@@ -10,21 +10,40 @@ got = ugot.UGOT()
 SPEED = 15
 SIDE_SPEED = 10
 
+def go_there():
+    got.mecanum_move_speed_times(0, 30, 60, 1)
+    got.mecanum_translate_speed_times(-90, 30, 90, 1)
+    got.mecanum_move_speed_times(0, 30, 120, 1)
+    got.mecanum_translate_speed_times(90, 30, 60, 1)
+    got.mecanum_move_speed_times(0, 30, 75, 1)
+    got.mecanum_turn_speed_times(2, 45, 90, 2)
+
+def go_back():
+    got.mecanum_move_speed_times(1, 30, 90, 1)
+    got.mecanum_turn_speed_times(2, 45, 90, 2)
+    got.mecanum_move_speed_times(0, 30, 75, 1)
+    got.mecanum_translate_speed_times(90, 30, 60, 1)
+    got.mecanum_move_speed_times(0, 30, 120, 1)
+    got.mecanum_translate_speed_times(-90, 30, 90, 1)
+    got.mecanum_move_speed_times(0, 30, 60, 1)
+
+
 def pick_up():
     got.mecanum_stop()
-    got.mechanical_joint_control(0, -20, -35, 500)
+    got.mechanical_joint_control(0, -20, -40, 500)
     time.sleep(1)
-    got.mechanical_clamp_close()               # grab object
+    got.mechanical_clamp_close()
     time.sleep(1)
     got.mechanical_joint_control(0, 30, 30, 500)
     time.sleep(1)
     if got.get_apriltag_total_info():
+        # Red background
         got.screen_display_background(3)
         got.mechanical_clamp_release()
         return False
     else:
+        # Green background
         got.screen_display_background(6)
-        got.mechanical_clamp_release()
         return True 
 
 
@@ -39,6 +58,7 @@ def main():
     got.mechanical_clamp_release()             # open gripper
     got.screen_clear()
 
+    go_there()
     # --------------------
     # 2. Seek-and-align loop
     # --------------------
@@ -56,6 +76,7 @@ def main():
             _, cx, cy, h, w, _, distance, *_ = tags[0]
             if distance < 0.19:
                 if pick_up():
+                    go_back()
                     break
                 else:
                     got.mecanum_move_speed_times(1, 30, 20, 1)
@@ -93,6 +114,8 @@ def main():
     # 3. Grasp & finish
     # --------------------
     cv2.destroyAllWindows()
+    got.mechanical_joint_control(0, -20, -35, 500)
+    got.mechanical_clamp_release()
 
 
 if __name__ == "__main__":
