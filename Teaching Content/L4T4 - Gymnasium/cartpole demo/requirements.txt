@@ -1,0 +1,4 @@
+gym==0.26.2
+matplotlib==3.10.1
+torch==2.6.0
+imageio-ffmpeg
