@@ -1,3 +1,5 @@
+'''This replicates the cartpole game in pygame so you can try it out'''
+
 import pygame
 import sys
 import math
