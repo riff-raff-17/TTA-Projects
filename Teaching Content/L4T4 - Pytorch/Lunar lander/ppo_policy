@@ -1,0 +1,57 @@
+digraph {
+	graph [size="12,12"]
+	node [align=left fontname=monospace fontsize=10 height=0.2 ranksep=0.1 shape=box style=filled]
+	5108475984 [label="
+ (1, 4)" fillcolor=darkolivegreen1]
+	5535691104 [label=SubBackward0]
+	5524449664 -> 5535691104
+	5524449664 [label=AddmmBackward0]
+	5515487760 -> 5524449664
+	5108476704 [label="action_net.bias
+ (4)" fillcolor=lightblue]
+	5108476704 -> 5515487760
+	5515487760 [label=AccumulateGrad]
+	5531845968 -> 5524449664
+	5531845968 [label=TanhBackward0]
+	5536425936 -> 5531845968
+	5536425936 [label=AddmmBackward0]
+	5536425312 -> 5536425936
+	5108475504 [label="mlp_extractor.policy_net.2.bias
+ (64)" fillcolor=lightblue]
+	5108475504 -> 5536425312
+	5536425312 [label=AccumulateGrad]
+	5536426608 -> 5536425936
+	5536426608 [label=TanhBackward0]
+	5536426848 -> 5536426608
+	5536426848 [label=AddmmBackward0]
+	5536426800 -> 5536426848
+	5108475264 [label="mlp_extractor.policy_net.0.bias
+ (64)" fillcolor=lightblue]
+	5108475264 -> 5536426800
+	5536426800 [label=AccumulateGrad]
+	5536427040 -> 5536426848
+	5536427040 [label=TBackward0]
+	5536427136 -> 5536427040
+	5108475344 [label="mlp_extractor.policy_net.0.weight
+ (64, 8)" fillcolor=lightblue]
+	5108475344 -> 5536427136
+	5536427136 [label=AccumulateGrad]
+	5536424448 -> 5536425936
+	5536424448 [label=TBackward0]
+	5536426896 -> 5536424448
+	5108475424 [label="mlp_extractor.policy_net.2.weight
+ (64, 64)" fillcolor=lightblue]
+	5108475424 -> 5536426896
+	5536426896 [label=AccumulateGrad]
+	5531876320 -> 5524449664
+	5531876320 [label=TBackward0]
+	5536426752 -> 5531876320
+	5108476624 [label="action_net.weight
+ (4, 64)" fillcolor=lightblue]
+	5108476624 -> 5536426752
+	5536426752 [label=AccumulateGrad]
+	5107816320 -> 5535691104
+	5107816320 [label=LogsumexpBackward0]
+	5524449664 -> 5107816320
+	5535691104 -> 5108475984
+}

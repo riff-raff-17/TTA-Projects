@@ -148,7 +148,8 @@ def main():
             # wait for ENTER or QUIT
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    pygame.quit(); sys.exit()
+                    pygame.quit()
+                    sys.exit()
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
                     state = PLAYING
 
@@ -160,12 +161,14 @@ def main():
             # wait for ENTER or ESC
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    pygame.quit(); sys.exit()
+                    pygame.quit()
+                    sys.exit()
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN:
                         state = PLAYING
                     elif event.key == pygame.K_ESCAPE:
-                        pygame.quit(); sys.exit()
+                        pygame.quit()
+                        sys.exit()
 
 if __name__ == "__main__":
     main()

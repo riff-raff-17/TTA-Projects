@@ -195,7 +195,8 @@ def main():
             show_menu(screen, assets['font'])
             for ev in pygame.event.get():
                 if ev.type == pygame.QUIT:
-                    pygame.quit(); sys.exit()
+                    pygame.quit()
+                    sys.exit()
                 if ev.type == pygame.KEYDOWN and ev.key == pygame.K_RETURN:
                     state = PLAYING
 
@@ -206,12 +207,14 @@ def main():
             show_game_over(screen, assets['font'], score)
             for ev in pygame.event.get():
                 if ev.type == pygame.QUIT:
-                    pygame.quit(); sys.exit()
+                    pygame.quit() 
+                    sys.exit()
                 if ev.type == pygame.KEYDOWN:
                     if ev.key == pygame.K_RETURN:
                         state, score = MENU, 0
                     elif ev.key == pygame.K_ESCAPE:
-                        pygame.quit(); sys.exit()
+                        pygame.quit() 
+                        sys.exit()
 
 if __name__ == "__main__":
     main()

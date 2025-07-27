@@ -12,12 +12,12 @@ class DigitCNN(nn.Module):
             # nn.Conv2d(in_channels, out_channels, kernel_size, padding=)
             nn.Conv2d(1, 16, 3, padding=1),  # 1x28x28 -> 16x28x28
             nn.ReLU(),
-            nn.MaxPool2d(2),                  # 16x28x28 -> 16x14x14
+            nn.MaxPool2d(2),                 # 16x28x28 -> 16x14x14
             nn.Conv2d(16, 32, 3, padding=1), # 16x14x14 -> 32x14x14
             nn.ReLU(),
-            nn.MaxPool2d(2),                  # 32x14x14 -> 32x7x7
+            nn.MaxPool2d(2),                 # 32x14x14 -> 32x7x7
         )
-        # Fully‐connected classifier
+        # Fully‐connected classifier 
         self.fc = nn.Sequential(
             nn.Linear(32 * 7 * 7, 128), # flatten 32x7x7 -> 1568 -> 128
             nn.ReLU(),
@@ -26,7 +26,7 @@ class DigitCNN(nn.Module):
 
     def forward(self, x):
         x = self.conv(x)
-        x = x.view(x.size(0), -1)   # flatten batch of feature maps to vectors
+        x = x.view(x.size(0), -1) # flatten batch of feature maps to vectors
         x = self.fc(x)
         return x
 
@@ -40,20 +40,20 @@ if __name__ == "__main__":
 
     # Instantiate model, loss function, and optimizer
     model = DigitCNN()
-    criterion = nn.CrossEntropyLoss()                  # combines LogSoftmax + NLLLoss
+    criterion = nn.CrossEntropyLoss() # combines LogSoftmax + NLLLoss
     optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 
     # Training loop
-    for epoch in range(3):                             # train for 3 epochs
+    for epoch in range(3): # train for 3 epochs
         print(f"Epoch {epoch + 1}")
         loop = tqdm(train_loader, desc="Training", leave=False)
         for images, labels in loop:
-            preds = model(images)                      # forward pass
-            loss = criterion(preds, labels)            # compute loss
+            preds = model(images) # forward pass
+            loss = criterion(preds, labels) # compute loss
 
-            optimizer.zero_grad()                      # reset gradients
-            loss.backward()                            # backpropagate
-            optimizer.step()                           # update weights
+            optimizer.zero_grad() # reset gradients
+            loss.backward() # backpropagate
+            optimizer.step() # update weights
 
             # Wpdate progress bar with current loss value
             loop.set_postfix(loss=loss.item())

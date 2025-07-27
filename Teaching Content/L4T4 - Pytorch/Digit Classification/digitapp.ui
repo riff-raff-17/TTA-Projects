@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface version="1.4" author="PygubuDesigner 0.41.3">
+  <project>
+    <settings>
+      <setting id="name">testing</setting>
+      <setting id="description">testing</setting>
+      <setting id="module_name">testing</setting>
+      <setting id="template">application</setting>
+      <setting id="main_widget">frame</setting>
+      <setting id="main_classname">frame</setting>
+      <setting id="main_menu" />
+      <setting id="output_dir" />
+      <setting id="output_dir2" />
+      <setting id="import_tkvariables">False</setting>
+      <setting id="use_ttk_styledefinition_file">False</setting>
+      <setting id="use_i18n">False</setting>
+      <setting id="all_ids_attributes">False</setting>
+      <setting id="generate_code_onsave">False</setting>
+      <setting id="use_window_centering_code">False</setting>
+      <setting id="ttk_style_definition_file" />
+    </settings>
+    <customwidgets />
+  </project>
+  <object class="ttk.Frame" id="frame" named="True">
+    <property name="height">200</property>
+    <property name="width">200</property>
+    <layout manager="pack">
+      <property name="side">top</property>
+    </layout>
+    <child>
+      <object class="tk.Canvas" id="canvas" named="True">
+        <property name="background">#ffffff</property>
+        <property name="height">280</property>
+        <property name="width">280</property>
+        <bind sequence="&lt;B1-Motion&gt;" handler="on_paint" add="" />
+        <layout manager="pack">
+          <property name="side">top</property>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Frame" id="button_frame" named="True">
+        <property name="height">200</property>
+        <property name="width">200</property>
+        <layout manager="pack">
+          <property name="side">top</property>
+        </layout>
+        <child>
+          <object class="ttk.Button" id="btn_predict" named="True">
+            <property name="command" type="command" cbtype="simple">on_predict_digit</property>
+            <property name="text" translatable="yes">Predict</property>
+            <bind sequence="&lt;1&gt;" handler="callback" add="" />
+            <layout manager="pack">
+              <property name="side">left</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="btn_clear" named="True">
+            <property name="command" type="command" cbtype="simple">on_clear_canvas</property>
+            <property name="text" translatable="yes">Clear</property>
+            <bind sequence="&lt;MouseWheel&gt;" handler="callb" add="" />
+            <layout manager="pack">
+              <property name="side">right</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Label" id="lbl_status" named="True">
+            <property name="font">{Baloo Chettan 2} 12 {}</property>
+            <property name="text" translatable="yes">Draw a digit!
+</property>
+            <layout manager="pack">
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
