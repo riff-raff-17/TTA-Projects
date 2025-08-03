@@ -58,7 +58,6 @@ time_steps = 0
 # “Waiting for SPACE” flag
 in_countdown = False
 
-
 def reset_environment():
     global x, x_dot, theta, theta_dot
     global game_over, time_steps
@@ -75,7 +74,6 @@ def reset_environment():
 
     # Wait for SPACE to start (freeze rendering)
     in_countdown = True
-
 
 # Initial reset: randomize state and show “Press SPACE to Start”
 reset_environment()
@@ -141,7 +139,7 @@ while True:
             in_countdown = False
 
         clock.tick(FPS)
-        continue  # skip physics/drawing until SPACE is pressed
+        continue # skip physics/drawing until SPACE is pressed
 
     # --- Physics update (runs only when NOT in_countdown and NOT game_over) ---
     if not game_over:
