@@ -1,7 +1,7 @@
 '''This JUST trains the model. 
 If you want the saved videoes, go to cartpole_vids.'''
 
-import gym
+import gymnasium as gym
 import torch
 import torch.nn as nn
 import torch.optim as optim
