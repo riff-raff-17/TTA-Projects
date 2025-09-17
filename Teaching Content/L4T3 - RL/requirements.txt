@@ -1,0 +1,4 @@
+gymnasium==1.2.0
+gymnasium[box2d]
+gymnasium[other]
+stable-baselines3==2.7.0
