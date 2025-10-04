@@ -19,7 +19,7 @@ import pygame
 # Goal: x >= 0.5
 
 X_MIN, X_MAX = -1.2, 0.6
-V_MIN, V_MAX = -0.07, 0.07
+V_MIN, V_MAX = -0.1, 0.1
 GOAL_X = 0.5
 
 def hill_y(x):
