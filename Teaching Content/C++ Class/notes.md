@@ -240,3 +240,366 @@ if (a = b) {
 **Final question**
 
 Why must score >= 80 come before score >= 50?
+
+
+# Section 5
+
+## Loops (while, for, do-while)
+
+Loops allow us to:
+
+- Repeat code without copying it
+- Count
+- Accumulate values (sum, product)
+- Process ranges of numbers
+
+Without loops:
+
+- Programs would be long and repetitive
+- Many problems would be impossible to solve cleanly
+
+## The while loop
+
+A while loop:
+
+- Checks the condition before each iteration
+- May run zero times
+
+Structure:
+```cpp
+while (condition) {
+    // repeated code
+}
+```
+
+For example:
+```cpp
+int i = 0;
+while (i < 5) {
+  cout << i << "\n";
+  i++;
+}
+```
+
+## The for loop
+
+
+A for loop is best when:
+- You know how many times to repeat
+
+Structure:
+
+```cpp
+for (initialization; condition; update) {
+    // repeated code
+}
+```
+
+For example:
+```cpp
+for (int i = 0; i < 5; i++) {
+  cout << i << "\n";
+}
+```
+
+## The do-while loop
+
+A do-while loop:
+- Runs at least once
+- Checks the condition after the loop body
+
+Structure:
+
+```cpp
+do {
+  // code block to be executed
+}
+while (condition);
+```
+
+For example:
+```cpp
+int i = 0;
+do {
+  cout << i << "\n";
+  i++;
+}
+while (i < 5);
+```
+
+## Important notes
+
+** The loop condition must eventually become false**
+
+Otherwise, the loop runs forever.
+
+Example of a bug:
+
+```cpp
+int x = 1;
+while (x <= 5) {
+    cout << x;
+    // missing x++
+}
+```
+
+**When to use each loop:**
+
+- while → unknown number of repetitions
+- for → known number of repetitions
+- do-while → must run at least once
+
+**Off-by-one errors**
+
+These are the most common loop bugs.
+
+```cpp
+for (int i = 0; i < 5; i++)
+```
+
+## Tasks
+
+**Task A**
+Print all numbers from:
+- 1 to 20 inclusive
+- On one line, separated by spaces
+
+**Task B**
+
+Read an integer n.
+Print all even numbers from 1 to n.
+
+**Task C**
+
+Read an integer n.
+Print the sum of even numbers from 1 to n.
+
+**Task D**
+
+Read an integer n.
+Print a square of stars of size n.
+
+Example for n = 4:
+```cpp
+****
+****
+****
+****
+```
+
+**Task E**
+
+Read an integer n.
+Print a triangle:
+
+For n = 4:
+```cpp
+*
+**
+***
+****
+```
+
+# Section 6
+
+## Why functions exist
+
+Functions allow us to:
+- Reuse code
+- Break problems into smaller pieces
+- Make programs easier to read and debug
+
+## Function structure
+
+The basic structure of a section is:
+```cpp
+return_type function_name(parameters) {
+    // code
+    return value;
+}
+```
+
+For example:
+```cpp
+int add(int a, int b) {
+    return a + b;
+}
+```
+
+## Void functions
+
+Do **not** return a value
+
+Used for printing or actions.
+
+For example:
+
+```cpp
+void Greeter(string name){
+    cout << "Hello, " << name << "!" << endl;
+}
+```
+
+## Pass-by-value (important!)
+
+A **copy** of the variable is passed
+
+Changes inside the function do NOT affect the original
+
+We’ll fix this later with references.
+
+For example:
+```cpp
+#include <iostream>
+using namespace std;
+
+void changeValue(int x) {
+    x = 10;   // modifies only the copy
+}
+
+int main() {
+    int a = 5;
+    changeValue(a);
+    cout << a;   // Output: 5
+    return 0;
+}
+```
+
+## Function notes
+
+### Function execution flow
+
+When a function is called:
+- Program jumps to the function
+- Executes its code
+- Returns to where it was called
+
+### Why number does NOT change:
+
+
+```cpp
+add(number, 5);
+```
+number is copied into parameter a
+
+The original variable is untouched
+
+This is pass-by-value.
+
+### `return` ends the function
+
+Code after `return` is never executed.
+
+## Tasks
+
+**Task A**
+
+Write a function:
+
+```cpp
+int square(int n)
+```
+Returns `n * n`.
+
+**Task B**
+
+Write a function:
+
+```cpp
+bool isPositive(int n)
+```
+Returns `true` if `n > 0`.
+
+**Task C**
+
+Write a function:
+
+```cpp
+void printStars(int n)
+```
+
+that prints `n` stars (*) on one line.
+
+**Task D**
+
+Write a function:
+```cpp
+int sumToN(int n)
+````
+
+Returns `1 + 2 + ... + n`.
+
+**Task E**
+
+Write a function:
+
+```cpp
+bool isPrime(int n)
+```
+
+# Section 7
+
+## Arrays, Strings, and Introduction to `vector`
+
+An array:
+
+- Stores multiple values of the same type
+- Has a fixed size
+- Uses indexing starting at 0
+
+For example:
+
+```cpp
+char a[5] = {'a', 'b', 'c', 'd', 'e'};
+```
+
+Indexes:
+```cpp
+a[0] a[1] a[2] a[3] a[4]
+
+```
+
+
+A string:
+- Stores text
+- Is basically a sequence of characters
+- Is safer and easier than char[]
+
+`getline`
+- `cin >>` stops at spaces
+- `getline` reads the whole line
+- Must clear leftover newline first
+
+
+
+A vector:
+- Is a **resizable** array
+- Knows its own size
+- Is **safer** than arrays
+
+Use vectors unless you have a reason not to.
+
+| Array      | Vector       |
+| ---------- | ------------ |
+| Fixed size | Dynamic size |
+| No size()  | Has size()   |
+| Unsafe     | Safer        |
+| Old C++    | Modern C++   |
+
+## Tasks
+
+**Task A**
+Create an array of size 10. Read 10 integers and print the largest value.
+
+**Task B**
+
+Read a sentence. Count how many vowels it contains.
+
+**Task C**
+Use a vector to read `n` numbers. Print how many are even.
+
+**Task D**
+Use a vector to read `n` numbers. Print the numbers in reverse order.
+
+**Task E**
+Read words into a vector until the user enters "stop". Then print all words.
