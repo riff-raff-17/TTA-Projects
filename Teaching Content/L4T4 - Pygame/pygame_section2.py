@@ -1,12 +1,3 @@
-"""
-Session 2: Drawing, Coordinates, and Screen Space
-
-Key ideas:
-- The screen is a 2D coordinate system with (0, 0) at the top-left
-- Drawing happens every frame inside draw()
-- Game owns the screen; objects do not draw globally
-"""
-
 import pygame
 
 
@@ -19,7 +10,7 @@ class Game:
         self.fps = fps
 
         self.screen = pygame.display.set_mode((self.width, self.height))
-        pygame.display.set_caption("Session 2 - Drawing & Coordinates")
+        pygame.display.set_caption("Drawing & Coordinates")
 
         self.clock = pygame.time.Clock()
         self.running = True

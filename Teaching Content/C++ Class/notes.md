@@ -589,6 +589,7 @@ Use vectors unless you have a reason not to.
 ## Tasks
 
 **Task A**
+
 Create an array of size 10. Read 10 integers and print the largest value.
 
 **Task B**
@@ -596,10 +597,13 @@ Create an array of size 10. Read 10 integers and print the largest value.
 Read a sentence. Count how many vowels it contains.
 
 **Task C**
+
 Use a vector to read `n` numbers. Print how many are even.
 
 **Task D**
+
 Use a vector to read `n` numbers. Print the numbers in reverse order.
 
 **Task E**
+
 Read words into a vector until the user enters "stop". Then print all words.
