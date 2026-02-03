@@ -1,7 +1,6 @@
 import sys
 import pygame
 
-
 class Game:
     def __init__(self, width=800, height=450, caption="Session 1 - Pygame OOP Skeleton"):
         pygame.init()
@@ -45,7 +44,7 @@ class Game:
 
     def draw(self):
         """Draw everything each frame."""
-        self.screen.fill((25, 25, 35))  # Background color
+        self.screen.fill((25, 25, 35))
 
         # In later sessions we’ll draw entities here.
 

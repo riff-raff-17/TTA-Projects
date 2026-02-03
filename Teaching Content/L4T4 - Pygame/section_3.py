@@ -1,6 +1,38 @@
 import sys
 import pygame
 
+class Bullet:
+    def __init__(self, pos, vel, lifetime=1.2):
+        self.pos = pygame.Vector2(pos)
+        self.vel = pygame.Vector2(vel)
+        self.lifetime = lifetime
+        self.radius = 3
+
+    def update(self, dt, screen_size):
+        self.pos += self.vel * dt
+        self.lifetime -= dt
+
+        w, h = screen_size
+        if self.pos.x < 0:
+            self.pos.x += w
+        elif self.pos.x >= w:
+            self.pos.x -= w
+
+        if self.pos.y < 0:
+            self.pos.y += h
+        elif self.pos.y >= h:
+            self.pos.y -= h
+
+        return self.lifetime > 0
+
+    def draw(self, surface):
+        pygame.draw.circle(surface, (255, 240, 120),
+                           (int(self.pos.x), int(self.pos.y)), self.radius)
+
+    def get_collision_circle(self):
+        return self.pos, float(self.radius)
+
+
 class Player:
     def __init__(self, pos):
         # Physics
@@ -19,7 +51,15 @@ class Player:
         # Rendering/collision
         self.radius = 16
 
+        # Shooting
+        self.fire_cooldown = 0.18
+        self._fire_timer = 0.0
+        self.bullet_speed = 650.0
+        self.bullet_spawn_offset = self.radius + 4
+
     def update(self, dt, keys, screen_size):
+        self._fire_timer = max(0.0, self._fire_timer - dt)
+
         # Rotation
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
             self.angle -= self.turn_speed * dt
@@ -53,6 +93,17 @@ class Player:
         elif self.pos.y >= h:
             self.pos.y -= h
 
+    def try_fire(self):
+        if self._fire_timer > 0.0:
+            return None
+
+        forward = pygame.Vector2(1, 0).rotate(self.angle)
+        spawn_pos = self.pos + forward * self.bullet_spawn_offset
+        bullet_vel = self.vel + forward * self.bullet_speed
+
+        self._fire_timer = self.fire_cooldown
+        return Bullet(spawn_pos, bullet_vel)
+
     def _ship_points(self):
         """
         Returns 3 points (triangle) in world space.
@@ -80,7 +131,7 @@ class Player:
 
 
 class Game:
-    def __init__(self, width=800, height=450, caption="Session 2 - Asteroids Ship Movement"):
+    def __init__(self, width=800, height=450, caption="Session 3 - Shooting"):
         pygame.init()
 
         self.width = width
@@ -92,8 +143,8 @@ class Game:
         self.running = True
         self.dt = 0.0
 
-        # NEW: center-spawn ship
         self.player = Player((self.width / 2, self.height / 2))
+        self.bullets = []
 
     def run(self):
         """Main game loop."""
@@ -121,10 +172,26 @@ class Game:
         keys = pygame.key.get_pressed()
         self.player.update(dt, keys, (self.width, self.height))
 
+        # NEW: hold SPACE to fire continuously (cooldown controls rate)
+        if keys[pygame.K_SPACE]:
+            bullet = self.player.try_fire()
+            if bullet is not None:
+                self.bullets.append(bullet)
+
+        alive = []
+        for b in self.bullets:
+            if b.update(dt, (self.width, self.height)):
+                alive.append(b)
+        self.bullets = alive
+
+
     def draw(self):
         """Draw everything each frame."""
         self.screen.fill((25, 25, 35))
-        # NEW: Drawing player
+
+        for b in self.bullets:
+            b.draw(self.screen)
+
         self.player.draw(self.screen)
         pygame.display.flip()
 

@@ -17,14 +17,6 @@ class Game:
 
         # Colors
         self.background_color = (20, 20, 30)
-        self.rectangle_color = (80, 160, 220)
-        self.text_color = (240, 240, 240)
-
-        # Rectangle properties
-        self.rect_x = 100
-        self.rect_y = 80
-        self.rect_width = 120
-        self.rect_height = 60
 
         # Font setup (None means default system font)
         self.font = pygame.font.Font(None, 32)
@@ -52,25 +44,27 @@ class Game:
         self.screen.fill(self.background_color)
 
         # Draw a rectangle
+        # (self.rect_x = 100, self.rect_y = 80, self.rect_width = 120, self.rect_height = 60)
         pygame.draw.rect(
-            self.screen,
-            self.rectangle_color,
-            (self.rect_x, self.rect_y, self.rect_width, self.rect_height)
+            surface=self.screen,
+            color=self.rectangle_color,
+            rect=(100, 80, 120, 60)
         )
 
-        # Draw a circle (center x, center y, radius)
+        # Draw a circle 
+        # #(center x, center y)
         pygame.draw.circle(
-            self.screen,
-            (200, 100, 100),
-            (400, 200),
-            40
+            surface=self.screen,
+            color=(200, 100, 100),
+            center=(400, 200),
+            radius=40
         )
 
         # Draw text
         text_surface = self.font.render(
             "Coordinates start at the top-left (0, 0)",
             True,
-            self.text_color
+            (240, 240, 240)
         )
         self.screen.blit(text_surface, (20, 20))
 

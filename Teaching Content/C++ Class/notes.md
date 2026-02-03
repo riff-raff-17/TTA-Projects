@@ -607,3 +607,39 @@ Use a vector to read `n` numbers. Print the numbers in reverse order.
 **Task E**
 
 Read words into a vector until the user enters "stop". Then print all words.
+
+
+# Section 8
+
+So far, we've used:
+
+```cpp
+string name;
+int age;
+double score;
+```
+
+But these variables belong together.
+
+A struct lets us bundle related data into one unit.
+
+## Struct definition
+
+```cpp
+struct Student {
+    string name;
+    int age;
+    double score;
+};
+```
+
+This creates a new type: `Student`.
+
+## Accessing members
+
+```cpp
+Student s;
+s.name = "Alex";
+s.age = 14;
+s.score = 87.5;
+```
