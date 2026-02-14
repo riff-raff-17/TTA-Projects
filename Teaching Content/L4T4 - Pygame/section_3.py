@@ -32,7 +32,6 @@ class Bullet:
     def get_collision_circle(self):
         return self.pos, float(self.radius)
 
-
 class Player:
     def __init__(self, pos):
         # Physics
@@ -184,7 +183,6 @@ class Game:
                 alive.append(b)
         self.bullets = alive
 
-
     def draw(self):
         """Draw everything each frame."""
         self.screen.fill((25, 25, 35))
@@ -199,7 +197,6 @@ class Game:
         """Clean shutdown."""
         pygame.quit()
         sys.exit()
-
 
 if __name__ == "__main__":
     Game().run()
