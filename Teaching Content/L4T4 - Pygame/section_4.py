@@ -11,7 +11,7 @@ class Asteroid:
     SIZES = {
         "big" : 40,
         "medium" : 26,
-        "small" : 16
+        "small" : 16,
     }
 
     def __init__(self, pos, vel, size_name="big"):
@@ -33,7 +33,7 @@ class Asteroid:
             self.pos.x += w
         elif self.pos.x >= w:
             self.pos.x -= w
-
+        
         if self.pos.y < 0:
             self.pos.y += h
         elif self.pos.y >= h:
@@ -47,7 +47,7 @@ class Asteroid:
         
         # Tiny line showing rotation
         tip = pygame.Vector2(self.radius, 0).rotate(self.angle) + self.pos
-        pygame.draw.line(surface=surface, color=(160, 160, 170), 
+        pygame.draw.line(surface=surface, color=(160, 160, 170),
                          start_pos=(int(self.pos.x), int(self.pos.y)),
                          end_pos=(int(tip.x), int(tip.y)), width=2)
         
@@ -104,7 +104,7 @@ class Player:
         self._fire_timer = 0.0
         self.bullet_speed = 650.0
         self.bullet_spawn_offset = self.radius + 4
-
+    
     def update(self, dt, keys, screen_size):
         self._fire_timer = max(0.0, self._fire_timer - dt)
 
@@ -190,15 +190,15 @@ class Game:
         self.asteroids = []
         self.target_asteroids = 5
 
-        # NEW: simple game state
-        self.game_over = False
-
         # Spawn a starting set
         for _ in range(self.target_asteroids):
             self.spawn_asteroid(size_name="big")
 
+        # NEW: simple game state
+        self.game_over = False
+
     def spawn_asteroid(self, size_name="big"):
-        # Spawn along a random edge so we don't instantly collide in the center.
+        # Spawn along a random edge so we don't instantly collide in the center
         w, h = self.width, self.height
         edge = random.choice(["top", "bottom", "left", "right"])
 
@@ -274,7 +274,7 @@ class Game:
         while len(self.asteroids) < self.target_asteroids:
             self.spawn_asteroid(size_name="big")
 
-        # --- Collisions: bullets vs asteroids ---
+        # Collisions: bullets vs asteroids
         bullets_to_remove = set()
         asteroids_to_remove = set()
 
@@ -285,13 +285,13 @@ class Game:
                 if circles_collide(bpos, br, apos, ar):
                     bullets_to_remove.add(bi)
                     asteroids_to_remove.add(ai)
-                    break  # one bullet hits one asteroid
+                    break # one bullet hits one asteroid
 
         if bullets_to_remove or asteroids_to_remove:
             self.bullets = [b for i, b in enumerate(self.bullets) if i not in bullets_to_remove]
             self.asteroids = [a for i, a in enumerate(self.asteroids) if i not in asteroids_to_remove]
 
-        # --- Collisions: player vs asteroids ---
+        # Collisions: player vs asteroids
         ppos, pr = self.player.get_collision_circle()
         for a in self.asteroids:
             apos, ar = a.get_collision_circle()
@@ -300,6 +300,7 @@ class Game:
                 break
 
     def draw(self):
+        """Draw everything each frame."""
         self.screen.fill((25, 25, 35))
 
         for a in self.asteroids:
@@ -315,17 +316,28 @@ class Game:
             hint = pygame.font.Font(None, 28).render("Press R to restart", True, (220, 220, 220))
 
             rect = text.get_rect(center=(self.width / 2, self.height / 2 - 20))
-            rect2 = hint.get_rect(center=(self.width / 2, self.height / 2 + 20))
+            rect2 = hint.get_rect(center=(self.width / 2, self.height / 2 + 40))
 
+            # Create a slightly larger rectangle for the background box
+            padding = 20
+            box_rect = rect.inflate(padding * 2, padding * 2)
+
+            # Draw filled rectangle (background box)
+            pygame.draw.rect(self.screen, (40, 40, 40), box_rect)
+
+            # Optional: draw border around the box
+            pygame.draw.rect(self.screen, (240, 80, 80), box_rect, 3)
+
+            # Draw the text on top
             self.screen.blit(text, rect)
             self.screen.blit(hint, rect2)
 
         pygame.display.flip()
 
     def quit(self):
+        """Clean shutdown."""
         pygame.quit()
         sys.exit()
-
 
 if __name__ == "__main__":
     Game().run()

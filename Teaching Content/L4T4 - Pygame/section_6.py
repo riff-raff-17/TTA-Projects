@@ -6,42 +6,6 @@ import pygame
 def circles_collide(pos_a, r_a, pos_b, r_b):
     return pos_a.distance_squared_to(pos_b) <= (r_a + r_b) ** 2
 
-
-class Bullet:
-    def __init__(self, pos, vel, lifetime=1.2):
-        self.pos = pygame.Vector2(pos)
-        self.vel = pygame.Vector2(vel)
-        self.lifetime = lifetime
-        self.radius = 3
-
-    def update(self, dt, screen_size):
-        self.pos += self.vel * dt
-        self.lifetime -= dt
-
-        w, h = screen_size
-        if self.pos.x < 0:
-            self.pos.x += w
-        elif self.pos.x >= w:
-            self.pos.x -= w
-
-        if self.pos.y < 0:
-            self.pos.y += h
-        elif self.pos.y >= h:
-            self.pos.y -= h
-
-        return self.lifetime > 0
-
-    def draw(self, surface):
-        pygame.draw.circle(
-            surface, (255, 240, 120),
-            (int(self.pos.x), int(self.pos.y)),
-            self.radius
-        )
-
-    def get_collision_circle(self):
-        return self.pos, float(self.radius)
-
-
 class Asteroid:
     SIZES = {
         "big": 40,
@@ -112,6 +76,41 @@ class Asteroid:
             children.append(Asteroid(self.pos, child_vel, size_name=next_size))
 
         return children
+    
+
+class Bullet:
+    def __init__(self, pos, vel, lifetime=1.2):
+        self.pos = pygame.Vector2(pos)
+        self.vel = pygame.Vector2(vel)
+        self.lifetime = lifetime
+        self.radius = 3
+
+    def update(self, dt, screen_size):
+        self.pos += self.vel * dt
+        self.lifetime -= dt
+
+        w, h = screen_size
+        if self.pos.x < 0:
+            self.pos.x += w
+        elif self.pos.x >= w:
+            self.pos.x -= w
+
+        if self.pos.y < 0:
+            self.pos.y += h
+        elif self.pos.y >= h:
+            self.pos.y -= h
+
+        return self.lifetime > 0
+
+    def draw(self, surface):
+        pygame.draw.circle(
+            surface, (255, 240, 120),
+            (int(self.pos.x), int(self.pos.y)),
+            self.radius
+        )
+
+    def get_collision_circle(self):
+        return self.pos, float(self.radius)
 
 
 class ShipExplosion:

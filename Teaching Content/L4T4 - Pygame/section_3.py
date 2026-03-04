@@ -146,7 +146,7 @@ class Game:
         self.bullets = []
 
     def run(self):
-        """Main game loop."""
+        """Main game loop"""
         while self.running:
             # dt in seconds (e.g., 0.016 at ~60 FPS)
             self.dt = self.clock.tick(60) / 1000.0
@@ -194,7 +194,7 @@ class Game:
         pygame.display.flip()
 
     def quit(self):
-        """Clean shutdown."""
+        """Clean shutdown"""
         pygame.quit()
         sys.exit()
 

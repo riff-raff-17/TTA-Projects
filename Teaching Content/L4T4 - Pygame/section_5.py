@@ -1,11 +1,79 @@
 import sys
-import random
 import pygame
-
+import random
 
 def circles_collide(pos_a, r_a, pos_b, r_b):
     return pos_a.distance_squared_to(pos_b) <= (r_a + r_b) ** 2
 
+class Asteroid:
+    SIZES = {
+        "big" : 40,
+        "medium" : 26,
+        "small" : 16,
+    }
+
+    def __init__(self, pos, vel, size_name="big"):
+        self.pos = pygame.Vector2(pos)
+        self.vel = pygame.Vector2(vel)
+        self.size_name = size_name
+        self.radius = self.SIZES[size_name]
+
+        self.angle = random.uniform(0, 360)
+        self.spin = random.uniform(-90, 90)
+
+    def update(self, dt, screen_size):
+        self.pos += self.vel * dt
+        self.angle = (self.angle + self.spin * dt) % 360
+
+        w, h = screen_size
+        if self.pos.x < 0:
+            self.pos.x += w
+        elif self.pos.x >= w:
+            self.pos.x -= w
+
+        if self.pos.y < 0:
+            self.pos.y += h
+        elif self.pos.y >= h:
+            self.pos.y -= h
+
+    def draw(self, surface):
+        # We'll draw a simple "rock" as a circle for now
+        pygame.draw.circle(surface=surface, color=(160, 160, 170),
+                           center=(int(self.pos.x), int(self.pos.y)),
+                           radius=int(self.radius), width=2)
+        
+        # Tiny line showing rotation
+        tip = pygame.Vector2(self.radius, 0).rotate(self.angle) + self.pos
+        pygame.draw.line(surface=surface, color=(160, 160, 170),
+                         start_pos=(int(self.pos.x), int(self.pos.y)),
+                         end_pos=(int(tip.x), int(tip.y)), width=2)
+        
+    def get_collision_circle(self):
+        return self.pos, float(self.radius)
+
+    def split(self):
+        """
+        Returns a list of new Asteroid objects (children).
+        big -> 2 medium
+        medium -> 2 small
+        small -> []
+        """
+        if self.size_name == "small":
+            return []
+
+        next_size = "medium" if self.size_name == "big" else "small"
+
+        children = []
+        for _ in range(2):
+            # Give each child a new direction/speed "kick"
+            direction = pygame.Vector2(1, 0).rotate(random.uniform(0, 360))
+            speed = random.uniform(120, 220) if next_size == "small" else random.uniform(90, 170)
+
+            # Children inherit some of the parent's velocity too
+            child_vel = self.vel * 0.4 + direction * speed
+            children.append(Asteroid(self.pos, child_vel, size_name=next_size))
+
+        return children
 
 class Bullet:
     def __init__(self, pos, vel, lifetime=1.2):
@@ -37,76 +105,6 @@ class Bullet:
 
     def get_collision_circle(self):
         return self.pos, float(self.radius)
-
-
-class Asteroid:
-    SIZES = {
-        "big": 40,
-        "medium": 26,
-        "small": 16,
-    }
-
-    def __init__(self, pos, vel, size_name="big"):
-        self.pos = pygame.Vector2(pos)
-        self.vel = pygame.Vector2(vel)
-        self.size_name = size_name
-        self.radius = self.SIZES[size_name]
-
-        self.angle = random.uniform(0, 360)
-        self.spin = random.uniform(-90, 90)
-
-    def update(self, dt, screen_size):
-        self.pos += self.vel * dt
-        self.angle = (self.angle + self.spin * dt) % 360
-
-        w, h = screen_size
-        if self.pos.x < 0:
-            self.pos.x += w
-        elif self.pos.x >= w:
-            self.pos.x -= w
-
-        if self.pos.y < 0:
-            self.pos.y += h
-        elif self.pos.y >= h:
-            self.pos.y -= h
-
-    def draw(self, surface):
-        pygame.draw.circle(surface, (160, 160, 170),
-                           (int(self.pos.x), int(self.pos.y)),
-                           int(self.radius), width=2)
-
-        tip = pygame.Vector2(self.radius, 0).rotate(self.angle) + self.pos
-        pygame.draw.line(surface, (160, 160, 170),
-                         (int(self.pos.x), int(self.pos.y)),
-                         (int(tip.x), int(tip.y)), width=2)
-
-    def get_collision_circle(self):
-        return self.pos, float(self.radius)
-
-    def split(self):
-        """
-        Returns a list of new Asteroid objects (children).
-        big -> 2 medium
-        medium -> 2 small
-        small -> []
-        """
-        if self.size_name == "small":
-            return []
-
-        next_size = "medium" if self.size_name == "big" else "small"
-
-        children = []
-        for _ in range(2):
-            # Give each child a new direction/speed "kick"
-            direction = pygame.Vector2(1, 0).rotate(random.uniform(0, 360))
-            speed = random.uniform(120, 220) if next_size == "small" else random.uniform(90, 170)
-
-            # Children inherit some of the parent's velocity too (classic feel)
-            child_vel = self.vel * 0.4 + direction * speed
-            children.append(Asteroid(self.pos, child_vel, size_name=next_size))
-
-        return children
-
 
 class Player:
     def __init__(self, pos):
@@ -168,15 +166,24 @@ class Player:
         return Bullet(spawn_pos, bullet_vel)
 
     def _ship_points(self):
+        """
+        Returns 3 points (triangle) in world space.
+        We'll draw a simple triangle ship.
+        """
+        # Define ship triangle in local space (pointing right),
+        # then rotate by angle and translate by pos.
         tip = pygame.Vector2(self.radius, 0)
         left = pygame.Vector2(-self.radius * 0.8, self.radius * 0.6)
         right = pygame.Vector2(-self.radius * 0.8, -self.radius * 0.6)
-        local = [tip, left, right]
-        return [p.rotate(self.angle) + self.pos for p in local]
+        
+        pts = [tip, left, right]
+        return [p.rotate(self.angle) + self.pos for p in pts]
 
     def draw(self, surface):
         pygame.draw.polygon(surface, (220, 220, 240),
                             self._ship_points(), width=2)
+        
+        # Draw a tiny center dot (helps see pos)
         pygame.draw.circle(surface, (220, 220, 240),
                            (int(self.pos.x), int(self.pos.y)), 2)
 
@@ -223,11 +230,12 @@ class Game:
 
     def start_wave(self):
         # Spawn more big asteroids each wave
-        count = 4 + self.wave  # wave 1 => 5 asteroids, wave 2 => 6, ...
+        count = 4 + self.wave * 2 # wave 1 -> 6 asteroids, wave 2 -> 8, ...
         for _ in range(count):
             self.spawn_asteroid(size_name="big")
 
     def spawn_asteroid(self, size_name="big"):
+        # Spawn along a random edge so we don't instantly collide in the center
         w, h = self.width, self.height
         edge = random.choice(["top", "bottom", "left", "right"])
 
@@ -269,6 +277,7 @@ class Game:
             self.score += 100
 
     def run(self):
+        """Main game loop."""
         while self.running:
             dt = self.clock.tick(60) / 1000.0
             self.handle_events()
@@ -277,6 +286,7 @@ class Game:
         self.quit()
 
     def handle_events(self):
+        """Handle all input/events."""
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
@@ -315,7 +325,7 @@ class Game:
         for a in self.asteroids:
             a.update(dt, (self.width, self.height))
 
-        # --- Collisions: bullets vs asteroids (with splitting) ---
+        # Collisions: bullets vs asteroids (with splitting) 
         bullets_to_remove = set()
         asteroids_to_remove = set()
         new_asteroids = []
@@ -338,7 +348,7 @@ class Game:
             self.asteroids = [a for i, a in enumerate(self.asteroids) if i not in asteroids_to_remove]
             self.asteroids.extend(new_asteroids)
 
-        # --- Collisions: player vs asteroids (lives + invuln) ---
+        # Collisions: player vs asteroids (lives + invuln)
         if self.invuln_timer <= 0.0:
             ppos, pr = self.player.get_collision_circle()
             for a in self.asteroids:
@@ -360,6 +370,7 @@ class Game:
             self.start_wave()
 
     def draw(self):
+        """Draw everything each frame."""
         self.screen.fill((25, 25, 35))
 
         for a in self.asteroids:
@@ -396,9 +407,9 @@ class Game:
         pygame.display.flip()
 
     def quit(self):
+        """Clean shutdown."""
         pygame.quit()
         sys.exit()
-
 
 if __name__ == "__main__":
     Game().run()

@@ -8,7 +8,7 @@ screen.bgcolor("black") # night sky
 
 t = turtle.Turtle()
 t.speed(0) # fastest
-t.width(2)
+t.width(7)
 t.hideturtle()
 
 colors = ["red", "orange", "yellow", "green", "cyan", "blue", "magenta", "white"]
