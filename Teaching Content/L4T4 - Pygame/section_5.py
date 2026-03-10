@@ -47,10 +47,10 @@ class Asteroid:
         pygame.draw.line(surface=surface, color=(160, 160, 170),
                          start_pos=(int(self.pos.x), int(self.pos.y)),
                          end_pos=(int(tip.x), int(tip.y)), width=2)
-        
+    
     def get_collision_circle(self):
         return self.pos, float(self.radius)
-
+    
     def split(self):
         """
         Returns a list of new Asteroid objects (children).
@@ -60,7 +60,7 @@ class Asteroid:
         """
         if self.size_name == "small":
             return []
-
+        
         next_size = "medium" if self.size_name == "big" else "small"
 
         children = []
@@ -91,14 +91,14 @@ class Bullet:
             self.pos.x += w
         elif self.pos.x >= w:
             self.pos.x -= w
-
+        
         if self.pos.y < 0:
             self.pos.y += h
         elif self.pos.y >= h:
             self.pos.y -= h
 
         return self.lifetime > 0
-
+    
     def draw(self, surface):
         pygame.draw.circle(surface, (255, 240, 120),
                            (int(self.pos.x), int(self.pos.y)), self.radius)
@@ -124,7 +124,7 @@ class Player:
         self._fire_timer = 0.0
         self.bullet_speed = 650.0
         self.bullet_spawn_offset = self.radius + 4
-
+    
     def update(self, dt, keys, screen_size):
         self._fire_timer = max(0.0, self._fire_timer - dt)
 
@@ -189,12 +189,11 @@ class Player:
 
     def get_collision_circle(self):
         return self.pos, float(self.radius)
-
+    
     def respawn(self, pos):
         self.pos = pygame.Vector2(pos)
         self.vel = pygame.Vector2(0, 0)
         self.angle = -90.0
-
 
 class Game:
     def __init__(self, width=800, height=450, caption="Session 5 - Asteroids Final"):
@@ -227,7 +226,7 @@ class Game:
         self.invuln_timer = 0.0
 
         self.start_wave()
-
+    
     def start_wave(self):
         # Spawn more big asteroids each wave
         count = 4 + self.wave * 2 # wave 1 -> 6 asteroids, wave 2 -> 8, ...
@@ -277,7 +276,7 @@ class Game:
             self.score += 100
 
     def run(self):
-        """Main game loop."""
+        """Main game loop"""
         while self.running:
             dt = self.clock.tick(60) / 1000.0
             self.handle_events()
@@ -299,9 +298,10 @@ class Game:
                     self.reset()
 
     def update(self, dt):
+        """Update game state."""
         if self.game_over:
             return
-
+        
         # Reduce invulnerability timer
         self.invuln_timer = max(0.0, self.invuln_timer - dt)
 
@@ -325,7 +325,7 @@ class Game:
         for a in self.asteroids:
             a.update(dt, (self.width, self.height))
 
-        # Collisions: bullets vs asteroids (with splitting) 
+        # Collisions: bullets vs asteroids (with splitting)
         bullets_to_remove = set()
         asteroids_to_remove = set()
         new_asteroids = []
@@ -364,14 +364,14 @@ class Game:
                         self.invuln_timer = self.invuln_time
                     break
 
-        # --- Wave progression ---
+        # Wave progression
         if not self.asteroids:
             self.wave += 1
             self.start_wave()
 
     def draw(self):
-        """Draw everything each frame."""
-        self.screen.fill((25, 25, 35))
+        """Draw everything each frame"""
+        self.screen.fill((25, 25, 35)) # Background color
 
         for a in self.asteroids:
             a.draw(self.screen)
