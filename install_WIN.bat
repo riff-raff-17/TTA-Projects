@@ -1,7 +1,7 @@
 @echo off
 setlocal
 
-set "PROJECT_NAME=opencv_project"
+set "PROJECT_NAME=nytc"
 set "PROJECT_DIR=%USERPROFILE%\Desktop\%PROJECT_NAME%"
 set "VENV_NAME=venv"
 
@@ -13,6 +13,9 @@ echo Creating requirements.txt...
 (
     echo ugot
     echo opencv-python
+    echo ipykernel
+    echo ipython
+    echo ultralytics
 ) > requirements.txt
 
 echo Checking for Python 3.13...
@@ -51,13 +54,14 @@ if errorlevel 1 (
     exit /b 1
 )
 
-echo.
+echo ---------------------------------
 echo Setup complete!
 echo Project created at: %PROJECT_DIR%
 echo.
-echo To activate later, run:
-echo cd /d "%PROJECT_DIR%"
-echo %VENV_NAME%\Scripts\activate
+
+echo Opening VS code...
+code
+
 echo.
 
 pause

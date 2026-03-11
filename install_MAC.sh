@@ -39,6 +39,9 @@ echo "Creating requirements.txt..."
 cat <<EOF > requirements.txt
 ugot
 opencv-python
+ipykernel
+ipython
+ultralytics
 EOF
 
 echo "Creating virtual environment..."
@@ -53,10 +56,8 @@ python -m pip install --upgrade pip
 echo "Installing dependencies..."
 python -m pip install -r requirements.txt
 
+echo "-----------------------------------------------"
 echo ""
 echo "Setup complete!"
 echo "Project created at: $PROJECT_DIR"
 echo ""
-echo "To activate the environment later:"
-echo "cd \"$PROJECT_DIR\""
-echo "source $VENV_NAME/bin/activate"
