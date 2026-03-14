@@ -8,9 +8,9 @@ def circles_collide(pos_a, r_a, pos_b, r_b):
 
 class Asteroid:
     SIZES = {
-        "big": 40,
-        "medium": 26,
-        "small": 16,
+        "big" : 40,
+        "medium" : 26,
+        "small" : 16,
     }
 
     def __init__(self, pos, vel, size_name="big"):
@@ -22,7 +22,7 @@ class Asteroid:
         self.angle = random.uniform(0, 360)
         self.spin = random.uniform(-90, 90)
 
-        # NEW: jagged polygon outline (local space)
+        # NEW: jagged polygon outline
         self.local_points = self._make_jagged_points()
 
     def _make_jagged_points(self):
@@ -61,22 +61,30 @@ class Asteroid:
 
     def get_collision_circle(self):
         return self.pos, float(self.radius)
-
+    
     def split(self):
+        """
+        Returns a list of new Asteroid objects (children).
+        big -> 2 medium
+        medium -> 2 small
+        small -> []
+        """
         if self.size_name == "small":
             return []
-
+        
         next_size = "medium" if self.size_name == "big" else "small"
-
+        
         children = []
         for _ in range(2):
+            # Give each child a new direction/speed "kick"
             direction = pygame.Vector2(1, 0).rotate(random.uniform(0, 360))
             speed = random.uniform(120, 220) if next_size == "small" else random.uniform(90, 170)
+
+            # Children inherit some of the parent's velocity too
             child_vel = self.vel * 0.4 + direction * speed
             children.append(Asteroid(self.pos, child_vel, size_name=next_size))
 
         return children
-    
 
 class Bullet:
     def __init__(self, pos, vel, lifetime=1.2):
@@ -101,13 +109,10 @@ class Bullet:
             self.pos.y -= h
 
         return self.lifetime > 0
-
+        
     def draw(self, surface):
-        pygame.draw.circle(
-            surface, (255, 240, 120),
-            (int(self.pos.x), int(self.pos.y)),
-            self.radius
-        )
+        pygame.draw.circle(surface, (255, 240, 120),
+                           (int(self.pos.x), int(self.pos.y)), self.radius)
 
     def get_collision_circle(self):
         return self.pos, float(self.radius)
