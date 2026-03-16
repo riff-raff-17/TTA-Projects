@@ -148,7 +148,7 @@ class Player:
             self.pos.x += w
         elif self.pos.x >= w:
             self.pos.x -= w
-
+        
         if self.pos.y < 0:
             self.pos.y += h
         elif self.pos.y >= h:
@@ -157,7 +157,7 @@ class Player:
     def try_fire(self):
         if self._fire_timer > 0.0:
             return None
-
+        
         forward = pygame.Vector2(1, 0).rotate(self.angle)
         spawn_pos = self.pos + forward * self.bullet_spawn_offset
         bullet_vel = self.vel + forward * self.bullet_speed
@@ -175,10 +175,10 @@ class Player:
         tip = pygame.Vector2(self.radius, 0)
         left = pygame.Vector2(-self.radius * 0.8, self.radius * 0.6)
         right = pygame.Vector2(-self.radius * 0.8, -self.radius * 0.6)
-        
+
         pts = [tip, left, right]
         return [p.rotate(self.angle) + self.pos for p in pts]
-
+    
     def draw(self, surface):
         pygame.draw.polygon(surface, (220, 220, 240),
                             self._ship_points(), width=2)
@@ -186,7 +186,7 @@ class Player:
         # Draw a tiny center dot (helps see pos)
         pygame.draw.circle(surface, (220, 220, 240),
                            (int(self.pos.x), int(self.pos.y)), 2)
-
+        
     def get_collision_circle(self):
         return self.pos, float(self.radius)
     
@@ -407,7 +407,7 @@ class Game:
         pygame.display.flip()
 
     def quit(self):
-        """Clean shutdown."""
+        """Clean shutdown"""
         pygame.quit()
         sys.exit()
 

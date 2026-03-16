@@ -109,7 +109,7 @@ class Bullet:
             self.pos.y -= h
 
         return self.lifetime > 0
-        
+
     def draw(self, surface):
         pygame.draw.circle(surface, (255, 240, 120),
                            (int(self.pos.x), int(self.pos.y)), self.radius)
@@ -117,14 +117,13 @@ class Bullet:
     def get_collision_circle(self):
         return self.pos, float(self.radius)
 
-
 class ShipExplosion:
     def __init__(self, ship_points, base_velocity):
         # Three edges of the ship triangle
         pairs = [
             (ship_points[0], ship_points[1]),
             (ship_points[1], ship_points[2]),
-            (ship_points[2], ship_points[0]),
+            (ship_points[2], ship_points[0])
         ]
 
         self.segments = []
@@ -162,7 +161,7 @@ class ShipExplosion:
                     p.y -= h
 
         return self.lifetime > 0
-
+    
     def draw(self, surface):
         t = max(0.0, min(1.0, self.lifetime / self.total_lifetime))
         c = int(220 * t)
@@ -174,7 +173,6 @@ class ShipExplosion:
                 (int(seg["b"].x), int(seg["b"].y)),
                 2
             )
-
 
 class Player:
     def __init__(self, pos):
