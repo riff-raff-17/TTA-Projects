@@ -177,3 +177,6 @@ cython_debug/
 .DS_Store
 
 *.weights
+
+# VSCode
+.vscode/
