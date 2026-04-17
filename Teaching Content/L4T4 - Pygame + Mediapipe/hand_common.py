@@ -11,8 +11,6 @@ It contains everything that never changes:
   - FPSCounter
 
 Nothing in here should ever need editing as the project grows.
-If you find yourself wanting to change something here, it
-probably belongs in a higher-level file instead.
 =============================================================
 """
 

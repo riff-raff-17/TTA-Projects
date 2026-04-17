@@ -43,7 +43,6 @@ from hand_common import (
     INDEX_MCP,
     FINGER_TIPS,
     FINGER_MCPS,
-    HAND_CONNECTIONS,
     lm_px,
 )
 
