@@ -31,9 +31,7 @@ from hand_common import (
     FPSCounter,
 )
 
-# ---------------------------------------------------------------------------
-# Config
-# ---------------------------------------------------------------------------
+# --- Config ---
 SCREEN_W, SCREEN_H = 960, 640
 CAM_W, CAM_H = 640, 480
 
@@ -41,13 +39,11 @@ CAM_W, CAM_H = 640, 480
 SMOOTHING = 0.75
 
 # Distance between thumb tip and index tip (in normalised units) below
-# which we consider the hand "pinching".
+# which we consider the hand "pinching"
 PINCH_THRESHOLD = 0.05
 
 
-# ---------------------------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------------------------
+# --- Helpers ---
 def norm_distance(a, b):
     """Euclidean distance between two normalised landmarks (ignoring z)."""
     return math.hypot(a.x - b.x, a.y - b.y)
@@ -57,9 +53,7 @@ def lerp(a, b, t):
     return a + (b - a) * t
 
 
-# ---------------------------------------------------------------------------
-# Main
-# ---------------------------------------------------------------------------
+# --- Main ---
 def main():
     # --- Pygame setup ---
     pygame.init()
@@ -85,7 +79,7 @@ def main():
 
     running = True
     while running:
-        # -------- Input: webcam frame --------
+        # --- Input: webcam frame ---
         ret, frame = cap.read()
         if not ret:
             continue
@@ -105,11 +99,11 @@ def main():
             index_tip = lms[INDEX_TIP]
             thumb_tip = lms[THUMB_TIP]
 
-            # Normalised (0-1) -> pygame screen coordinates.
+            # Normalised (0-1) -> pygame screen coordinates
             target_x = index_tip.x * SCREEN_W
             target_y = index_tip.y * SCREEN_H
 
-            # Pinch detection.
+            # Pinch detection
             is_pinching = norm_distance(index_tip, thumb_tip) < PINCH_THRESHOLD
 
             # (Optional) draw the fingertip on the webcam preview
@@ -123,18 +117,18 @@ def main():
         else:
             is_pinching = False
 
-        # -------- Update: smooth character toward target --------
+        # --- Update: smooth character towards target ---
         char_x = lerp(char_x, target_x, 1 - SMOOTHING)
         char_y = lerp(char_y, target_y, 1 - SMOOTHING)
 
-        # -------- Pygame events --------
+        # --- Pygame events ---
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 running = False
 
-        # -------- Render --------
+        # --- Render ---
         screen.fill((20, 22, 30))
 
         # Character
