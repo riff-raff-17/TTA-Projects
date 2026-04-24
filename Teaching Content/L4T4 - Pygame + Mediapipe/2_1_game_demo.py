@@ -35,7 +35,7 @@ from hand_common import (
 SCREEN_W, SCREEN_H = 960, 640
 CAM_W, CAM_H = 640, 480
 
-# How much to smooth the character's motion (0 = no smoothing, 1 = frozen).
+# How much to smooth the character's motion (0 = no smoothing, 1 = frozen)
 SMOOTHING = 0.75
 
 # Distance between thumb tip and index tip (in normalised units) below
