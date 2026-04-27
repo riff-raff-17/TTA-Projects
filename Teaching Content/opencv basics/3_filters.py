@@ -2,11 +2,6 @@ import cv2
 import numpy as np
 from ugot import ugot
 
-got = ugot.UGOT()
-got.initialize("192.168.1.104")  # <-- change to your robot's IP
-got.open_camera()
-
-
 # --- List of filters in order ---
 # Each entry is a display name and a function that takes a frame and returns a frame
 def apply_normal(frame):
@@ -55,7 +50,18 @@ def apply_sepia(frame):
     sepia = cv2.transform(frame, kernel)
     return np.clip(sepia, 0, 255).astype(np.uint8)
 
+def apply_pixelate(frame):
+    h, w = frame.shape[:2]
+    small = cv2.resize(frame, (w // 16, h // 16), interpolation=cv2.INTER_LINEAR)
+    return cv2.resize(small, (w, h), interpolation=cv2.INTER_NEAREST)
 
+def apply_sharpen(frame):
+    kernel = np.array([[ 0, -1,  0],
+                       [-1,  5, -1],
+                       [ 0, -1,  0]])
+    return cv2.filter2D(frame, -1, kernel)
+
+# --- Constants ---
 FILTERS = [
     ("Normal", apply_normal),
     ("Grayscale", apply_grayscale),
@@ -64,11 +70,18 @@ FILTERS = [
     ("Cartoon", apply_cartoon),
     ("Invert", apply_invert),
     ("Sepia", apply_sepia),
+    ("Pixelate", apply_pixelate),
+    ("Sharp", apply_sharpen)
 ]
 
 
 def main():
     current = 0  # index into FILTERS
+
+    got = ugot.UGOT()
+    got.initialize("192.168.1.251")  # <-- change to your robot's IP
+    got.open_camera()
+
 
     while True:
         frame = got.read_camera_data()
@@ -86,7 +99,7 @@ def main():
         name, fn = FILTERS[current]
         output = fn(data)
 
-        # HUD — show current filter and controls
+        # HUD - show current filter and controls
         cv2.putText(
             output,
             f"Filter: {name}",
@@ -98,7 +111,7 @@ def main():
         )
         cv2.putText(
             output,
-            "n = next  |  p = prev  |  q = quit",
+            "n = next | p = prev | q = quit",
             (10, 60),
             cv2.FONT_HERSHEY_SIMPLEX,
             0.55,
