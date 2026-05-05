@@ -4,7 +4,7 @@ PART 2 — Hand-Controlled Character (MediaPipe + Pygame)
 =============================================================
 Goal: use your hand to move a character around a pygame window.
 
-  - Index finger tip (landmark 8) steers the character.
+  - Index finger tip (landmark 8) steers tehe character.
   - Pinch (thumb tip + index tip close together) makes the
     character "activate" (changes colour + grows briefly).
 
@@ -83,7 +83,7 @@ def main():
         ret, frame = cap.read()
         if not ret:
             continue
-        frame = cv2.flip(frame, 1)  # mirror so it feels natural
+        # frame = cv2.flip(frame, 1)  # mirror so it feels natural
         img_h, img_w = frame.shape[:2]
 
         mp_image = mp.Image(
@@ -159,7 +159,7 @@ def main():
         pygame.display.flip()
         fps.tick()
 
-        # -------- Optional webcam preview window --------
+        # Webcam preview window 
         cv2.imshow("Camera (press Q in this window to quit)", frame)
         if cv2.waitKey(1) & 0xFF == ord("q"):
             running = False
