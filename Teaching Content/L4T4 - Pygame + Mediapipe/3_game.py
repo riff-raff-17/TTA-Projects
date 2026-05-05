@@ -54,8 +54,8 @@ SCREEN_W, SCREEN_H = 960, 640
 CAM_W, CAM_H = 640, 480
 CENTER = (SCREEN_W // 2, SCREEN_H // 2)
 
-SMOOTHING = 0.70          # finger-tip smoothing (0=raw, 1=frozen)
-PINCH_THRESHOLD = 0.05    # normalised distance for pinch detection
+SMOOTHING = 0.70  # finger-tip smoothing (0=raw, 1=frozen)
+PINCH_THRESHOLD = 0.05  # normalised distance for pinch detection
 
 # Character
 CHAR_RADIUS = 30
@@ -63,19 +63,19 @@ CHAR_RADIUS = 30
 # Bullets
 BULLET_SPEED = 10
 BULLET_RADIUS = 6
-BULLET_LIFETIME = 1.2      # seconds before bullet disappears off-screen
+BULLET_LIFETIME = 1.2  # seconds before bullet disappears off-screen
 
 # Entities
 ENEMY_RADIUS = 18
 FRIENDLY_RADIUS = 16
-BASE_ENTITY_SPEED = 2.4    # pixels per frame at wave 1
-SPAWN_INTERVAL = 2.0       # seconds between spawns at wave 1
-ENEMY_RATIO = 0.65         # fraction of spawns that are enemies
+BASE_ENTITY_SPEED = 2.4  # pixels per frame at wave 1
+SPAWN_INTERVAL = 2.0  # seconds between spawns at wave 1
+ENEMY_RATIO = 0.65  # fraction of spawns that are enemies
 
-REACH_RADIUS = CHAR_RADIUS + 4   # how close = "reached" the character
+REACH_RADIUS = CHAR_RADIUS + 4  # how close = "reached" the character
 
 # Shooting
-FIRE_RATE = 0.12   # seconds between bullets while pinching (≈8 bullets/sec)
+FIRE_RATE = 0.12  # seconds between bullets while pinching (~8 bullets/sec)
 
 # Lives
 MAX_LIVES = 5
@@ -84,19 +84,20 @@ MAX_LIVES = 5
 AIM_LINE_LEN = 80
 
 # ---------------------------------------------------------------------------
-# Colours
+# Colors
 # ---------------------------------------------------------------------------
-BG           = (12, 14, 22)
-CHAR_COLOR   = (80, 200, 255)
-CHAR_PINCH   = (255, 180, 60)
-AIM_COLOR    = (255, 255, 255)
+BG = (12, 14, 22)
+CHAR_COLOR = (80, 200, 255)
+CHAR_PINCH = (255, 180, 60)
+AIM_COLOR = (255, 255, 255)
 BULLET_COLOR = (255, 230, 80)
-ENEMY_COLOR  = (220, 50, 50)
+ENEMY_COLOR = (220, 50, 50)
 FRIEND_COLOR = (60, 200, 100)
-HUD_COLOR    = (220, 220, 220)
-LIFE_COLOR   = (220, 50, 80)
-WARN_COLOR   = (255, 100, 100)
-SCORE_COLOR  = (255, 220, 60)
+HUD_COLOR = (220, 220, 220)
+LIFE_COLOR = (220, 50, 80)
+WARN_COLOR = (255, 100, 100)
+SCORE_COLOR = (255, 220, 60)
+
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -104,28 +105,33 @@ SCORE_COLOR  = (255, 220, 60)
 def norm_distance(a, b):
     return math.hypot(a.x - b.x, a.y - b.y)
 
+
 def lerp(a, b, t):
     return a + (b - a) * t
 
+
 def angle_to(cx, cy, tx, ty):
-    """Angle in radians from (cx,cy) toward (tx,ty)."""
+    """Angle in radians from (cx, cy) toward (tx, ty)."""
     return math.atan2(ty - cy, tx - cx)
+
 
 def spawn_edge_position():
     """Return a random (x, y) just outside the screen edges."""
     side = random.randint(0, 3)
     margin = 30
-    if side == 0:   # top
+    if side == 0:  # top
         return random.randint(0, SCREEN_W), -margin
-    elif side == 1: # bottom
+    elif side == 1:  # bottom
         return random.randint(0, SCREEN_W), SCREEN_H + margin
-    elif side == 2: # left
+    elif side == 2:  # left
         return -margin, random.randint(0, SCREEN_H)
-    else:           # right
+    else:  # right
         return SCREEN_W + margin, random.randint(0, SCREEN_H)
+
 
 def circle_collide(ax, ay, ar, bx, by, br):
     return math.hypot(ax - bx, ay - by) < ar + br
+
 
 # ---------------------------------------------------------------------------
 # Entity classes
@@ -194,14 +200,23 @@ class Bullet:
             self.alive = False
 
     def draw(self, surface):
-        pygame.draw.circle(surface, BULLET_COLOR,
-                           (int(self.x), int(self.y)), BULLET_RADIUS)
+        pygame.draw.circle(
+            surface, BULLET_COLOR, (int(self.x), int(self.y)), BULLET_RADIUS
+        )
         # glow
-        glow_surf = pygame.Surface((BULLET_RADIUS * 4, BULLET_RADIUS * 4), pygame.SRCALPHA)
-        pygame.draw.circle(glow_surf, (*BULLET_COLOR, 60),
-                           (BULLET_RADIUS * 2, BULLET_RADIUS * 2), BULLET_RADIUS * 2)
-        surface.blit(glow_surf,
-                     (int(self.x) - BULLET_RADIUS * 2, int(self.y) - BULLET_RADIUS * 2))
+        glow_surf = pygame.Surface(
+            (BULLET_RADIUS * 4, BULLET_RADIUS * 4), pygame.SRCALPHA
+        )
+        pygame.draw.circle(
+            glow_surf,
+            (*BULLET_COLOR, 60),
+            (BULLET_RADIUS * 2, BULLET_RADIUS * 2),
+            BULLET_RADIUS * 2,
+        )
+        surface.blit(
+            glow_surf,
+            (int(self.x) - BULLET_RADIUS * 2, int(self.y) - BULLET_RADIUS * 2),
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -257,7 +272,7 @@ class Game:
         self.finger_y = float(CENTER[1])
         # Hit flash timer
         self.hit_flash = 0.0
-        self.last_shot = 0.0   # timestamp of last bullet fired
+        self.last_shot = 0.0  # timestamp of last bullet fired
 
     # ---- Difficulty ----
     def current_wave(self):
@@ -400,7 +415,9 @@ class Game:
         for off in (-0.4, 0.4):
             hx = ax + math.cos(self.aim_angle + math.pi + off) * 12
             hy = ay + math.sin(self.aim_angle + math.pi + off) * 12
-            pygame.draw.line(surface, AIM_COLOR, (int(ax), int(ay)), (int(hx), int(hy)), 2)
+            pygame.draw.line(
+                surface, AIM_COLOR, (int(ax), int(ay)), (int(hx), int(hy)), 2
+            )
 
         # Character
         color = CHAR_PINCH if self.pinching else CHAR_COLOR
@@ -422,16 +439,20 @@ class Game:
         # Lives — top right as hearts
         for i in range(MAX_LIVES):
             color = LIFE_COLOR if i < self.lives else (50, 50, 60)
-            pygame.draw.circle(surface, color,
-                               (SCREEN_W - 20 - i * 28, 22), 10)
+            pygame.draw.circle(surface, color, (SCREEN_W - 20 - i * 28, 22), 10)
 
         lives_lbl = font.render("LIVES", True, HUD_COLOR)
-        surface.blit(lives_lbl, (SCREEN_W - 20 - MAX_LIVES * 28 - lives_lbl.get_width() - 6, 14))
+        surface.blit(
+            lives_lbl, (SCREEN_W - 20 - MAX_LIVES * 28 - lives_lbl.get_width() - 6, 14)
+        )
 
         # Legend bottom
         legend = [
-            ("RED = Enemy  → shoot to score (+10)",  ENEMY_COLOR),
-            ("GREEN = Friendly  → let them reach you (+5) / don't shoot!", FRIEND_COLOR),
+            ("RED = Enemy  → shoot to score (+10)", ENEMY_COLOR),
+            (
+                "GREEN = Friendly  → let them reach you (+5) / don't shoot!",
+                FRIEND_COLOR,
+            ),
         ]
         for i, (text, col) in enumerate(legend):
             surf = font.render(text, True, col)
@@ -450,7 +471,9 @@ class Game:
             surface.blit(sc, (SCREEN_W // 2 - sc.get_width() // 2, SCREEN_H // 2 - 10))
 
             restart = font_med.render("Press  R  to restart", True, HUD_COLOR)
-            surface.blit(restart, (SCREEN_W // 2 - restart.get_width() // 2, SCREEN_H // 2 + 50))
+            surface.blit(
+                restart, (SCREEN_W // 2 - restart.get_width() // 2, SCREEN_H // 2 + 50)
+            )
 
 
 # ---------------------------------------------------------------------------
@@ -462,7 +485,7 @@ def main():
     pygame.display.set_caption("Hand Shooting Game")
     clock = pygame.time.Clock()
 
-    font     = pygame.font.SysFont("consolas", 16)
+    font = pygame.font.SysFont("consolas", 16)
     font_med = pygame.font.SysFont("consolas", 28, bold=True)
     font_big = pygame.font.SysFont("consolas", 56, bold=True)
 
@@ -514,9 +537,13 @@ def main():
             game.pinching = norm_distance(index_tip, thumb_tip) < PINCH_THRESHOLD
 
             # Draw fingertip on camera preview
-            cv2.circle(frame,
-                       (int(index_tip.x * img_w), int(index_tip.y * img_h)),
-                       8, (0, 255, 0), -1)
+            cv2.circle(
+                frame,
+                (int(index_tip.x * img_w), int(index_tip.y * img_h)),
+                8,
+                (0, 255, 0),
+                -1,
+            )
         else:
             game.pinching = False
 
