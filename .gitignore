@@ -184,3 +184,5 @@ cython_debug/
 # C++
 *.dSYM/
 build/
+
+*.task
