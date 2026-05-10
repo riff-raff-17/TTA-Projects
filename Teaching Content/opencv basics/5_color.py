@@ -3,12 +3,13 @@ import numpy as np
 from ugot import ugot
 
 got = ugot.UGOT()
-got.initialize("192.168.1.197") 
+got.initialize("192.168.1.193") 
 got.open_camera()
 
 # --- Tunable settings ---
 TURN_SPEED = 40  # how fast the robot turns to chase the object
 MIN_AREA = 2000  # ignore tiny blobs (noise); increase if getting false detections
+DEADZONE = 100
 
 # --- HSV color range for a RED object ---
 # HSV hue for red wraps around 0/180, so we need two ranges
@@ -97,9 +98,9 @@ def main():
             if tracking:
                 error = cx - frame_cx  # negative = object is left, positive = right
 
-                if error < -30:  # object is to the left → turn left
+                if error < -DEADZONE:  # object is to the left → turn left
                     got.mecanum_turn_speed(2, TURN_SPEED)
-                elif error > 30:  # object is to the right → turn right
+                elif error > DEADZONE:  # object is to the right → turn right
                     got.mecanum_turn_speed(3, TURN_SPEED)
                 else:  # object is roughly centered → stop turning
                     got.mecanum_stop()
