@@ -4,7 +4,7 @@ from ugot import ugot
 
 # --- Connect to the robot and open the camera ---
 got = ugot.UGOT()
-got.initialize("192.168.1.182")
+got.initialize("192.168.1.46")
 got.open_camera()
 
 print("Camera opened. Press 'q' to quit.")
@@ -81,11 +81,25 @@ while True:
     if cx is not None:
         # Draw a dot at the detected object's center
         cv2.circle(data, (cx, cy), 12, (0, 255, 0), -1)
-        cv2.putText(data, f"Object at x={cx}, y={cy}", (10, 30),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+        cv2.putText(
+            data,
+            f"Object at x={cx}, y={cy}",
+            (10, 30),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.7,
+            (0, 255, 0),
+            2,
+        )
     else:
-        cv2.putText(data, "No object found", (10, 30),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+        cv2.putText(
+            data,
+            "No object found",
+            (10, 30),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.7,
+            (0, 0, 255),
+            2,
+        )
 
     # Display the live camera feed in a window
     cv2.imshow("Camera Feed", data)

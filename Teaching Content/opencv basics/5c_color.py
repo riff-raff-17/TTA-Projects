@@ -4,7 +4,7 @@ from ugot import ugot
 
 # --- Connect to the robot and open the camera ---
 got = ugot.UGOT()
-got.initialize("192.168.1.193")
+got.initialize("192.168.1.46")
 got.open_camera()
 
 print("Camera opened. Press 't' to toggle tracking, 'q' to quit.")
@@ -20,11 +20,10 @@ MIN_AREA = 2000  # ignore tiny blobs (noise); increase if getting false detectio
 
 # --- NEW: Steering settings ---
 TURN_SPEED = 40  # how fast the robot turns to chase the object
-DEADZONE = 100   # how many pixels off-center before we bother turning
-TURN_LEFT = 2    # direction constant for the mecanum drive
-TURN_RIGHT = 3   # direction constant for the mecanum drive
+DEADZONE = 100  # how many pixels off-center before we bother turning
 
 
+# --- Color detection function ---
 def find_object(frame):
     """
     Convert frame to HSV, build a red mask, find the biggest blob.
@@ -58,8 +57,7 @@ def find_object(frame):
     cy = y + h // 2
     return cx, cy, area, mask
 
-
-# --- NEW: tracking starts off; press 't' to enable ---
+# --- NEW: tracking flag - tracking starts off, press 't' to enable ---
 tracking = False
 
 while True:
@@ -85,8 +83,20 @@ while True:
     cv2.line(data, (frame_cx, 0), (frame_cx, data.shape[0]), (255, 255, 0), 1)
 
     # Draw the deadzone boundaries (object must cross these before the robot turns)
-    cv2.line(data, (frame_cx - DEADZONE, 0), (frame_cx - DEADZONE, data.shape[0]), (0, 165, 255), 1)
-    cv2.line(data, (frame_cx + DEADZONE, 0), (frame_cx + DEADZONE, data.shape[0]), (0, 165, 255), 1)
+    cv2.line(
+        data,
+        (frame_cx - DEADZONE, 0),
+        (frame_cx - DEADZONE, data.shape[0]),
+        (0, 165, 255),
+        1,
+    )
+    cv2.line(
+        data,
+        (frame_cx + DEADZONE, 0),
+        (frame_cx + DEADZONE, data.shape[0]),
+        (0, 165, 255),
+        1,
+    )
 
     # Run color detection on the frame
     cx, cy, area, mask = find_object(data)
@@ -97,24 +107,38 @@ while True:
     if cx is not None:
         # Draw a dot at the detected object's center
         cv2.circle(data, (cx, cy), 12, (0, 255, 0), -1)
-        cv2.putText(data, f"Object at x={cx}, y={cy}", (10, 60),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+        cv2.putText(
+            data,
+            f"Object at x={cx}, y={cy}",
+            (10, 60),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.7,
+            (0, 255, 0),
+            2,
+        )
 
         # --- NEW: Steering logic ---
         if tracking:
             error = cx - frame_cx  # negative = object is left, positive = right
 
-            if error < -DEADZONE:       # object is to the left → turn left
-                got.mecanum_turn_speed(TURN_LEFT, TURN_SPEED)
-            elif error > DEADZONE:      # object is to the right → turn right
-                got.mecanum_turn_speed(TURN_RIGHT, TURN_SPEED)
-            else:                       # object is roughly centered → stop turning
+            if error < -DEADZONE:  # object is to the left -> turn left
+                got.mecanum_turn_speed(2, TURN_SPEED)
+            elif error > DEADZONE:  # object is to the right -> turn right
+                got.mecanum_turn_speed(3, TURN_SPEED)
+            else:  # object is roughly centered -> stop turning
                 got.mecanum_stop()
     else:
         if tracking:
-            got.mecanum_stop()          # nothing found → stop
-        cv2.putText(data, "No object found", (10, 60),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+            got.mecanum_stop()  # nothing found -> stop
+        cv2.putText(
+            data,
+            "No object found",
+            (10, 60),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.7,
+            (0, 0, 255),
+            2,
+        )
 
     # --- NEW: HUD showing whether tracking is on or off ---
     mode = "TRACKING ON  (t=off)" if tracking else "TRACKING OFF (t=on)"
@@ -127,7 +151,7 @@ while True:
     key = cv2.waitKey(1) & 0xFF
     if key == ord("q"):
         break
-    elif key == ord("t"):   # --- NEW: toggle tracking on/off ---
+    elif key == ord("t"):  # --- NEW: toggle tracking on/off ---
         tracking = not tracking
         if not tracking:
             got.mecanum_stop()
