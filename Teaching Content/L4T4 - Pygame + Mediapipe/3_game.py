@@ -376,7 +376,7 @@ class Game:
         for _ in range(18):
             self.particles.append(Particle(x, y, color))
 
-    # ---- Draw ----
+    # --- Draw ---
     def draw(self, surface, font, font_big, font_med):
         # Background
         surface.fill(BG)
