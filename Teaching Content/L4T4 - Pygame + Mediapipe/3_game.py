@@ -427,7 +427,7 @@ class Game:
         # Inner dot
         pygame.draw.circle(surface, (255, 255, 255), CENTER, 5)
 
-        # HUD — top left
+        # HUD - top left
         lines = [
             f"SCORE : {self.score}",
             f"WAVE  : {self.wave}",
@@ -436,7 +436,7 @@ class Game:
             surf = font.render(line, True, HUD_COLOR)
             surface.blit(surf, (12, 10 + i * 22))
 
-        # Lives — top right as hearts
+        # Lives - top right as hearts
         for i in range(MAX_LIVES):
             color = LIFE_COLOR if i < self.lives else (50, 50, 60)
             pygame.draw.circle(surface, color, (SCREEN_W - 20 - i * 28, 22), 10)
