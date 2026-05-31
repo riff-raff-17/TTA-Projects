@@ -4,7 +4,7 @@ from ugot import ugot
 
 # --- Connect to the robot and open the camera ---
 got = ugot.UGOT()
-got.initialize("192.168.1.46")
+got.initialize("192.168.1.202")
 got.open_camera()
 
 print("Camera opened. Press 't' to toggle tracking, 'q' to quit.")
@@ -28,8 +28,8 @@ TURN_RIGHT = 3  # direction constant for the mecanum drive
 DRIVE_SPEED = 20  # how fast the robot drives toward/away from the object
 FORWARD = 0  # direction constant for forward drive
 BACKWARD = 1  # direction constant for backward drive
-TARGET_AREA = 18000  # blob area (px²) that means "just right" distance
-AREA_DEADZONE = 4000  # area must differ from TARGET by this much before we move
+TARGET_AREA = 18000  # blob area (px^2) that means "just right" distance
+AREA_DEADZONE = 4000  # area must differ from TARGET_AREA by this much before we move
 #   Tune TARGET_AREA by watching the "Area" readout in the HUD at your desired distance.
 
 # --- NEW: Confidence HUD settings ---
@@ -38,6 +38,7 @@ AREA_DEADZONE = 4000  # area must differ from TARGET by this much before we move
 MAX_AREA = 80000
 
 
+# --- Color detection function ---
 def find_object(frame):
     """
     Convert frame to HSV, build a red mask, find the biggest blob.
@@ -76,7 +77,7 @@ def find_object(frame):
     return cx, cy, area, (x, y, w, h), mask
 
 
-# --- tracking starts off; press 't' to enable ---
+# --- tracking flag - tracking starts off, press 't' to enable ---
 tracking = False
 
 while True:
@@ -140,6 +141,7 @@ while True:
         )
 
         # Object position readout (existing, unchanged position)
+        cv2.circle(data, (cx, cy), 12, (0, 255, 0), -1)
         cv2.putText(
             data,
             f"Object at x={cx}, y={cy}",
@@ -168,7 +170,7 @@ while True:
         )
 
         # --- NEW: Confidence bar (scaled to MAX_AREA) ---
-        conf = min(area / MAX_AREA, 1.0)  # 0.0 – 1.0
+        conf = min(area / MAX_AREA, 1.0)  # 0.0 - 1.0
         bar_x, bar_y, bar_w, bar_h = 10, 110, 200, 16
         cv2.rectangle(
             data, (bar_x, bar_y), (bar_x + bar_w, bar_y + bar_h), (50, 50, 50), -1
@@ -220,7 +222,7 @@ while True:
                 got.mecanum_stop()  # only ONE stop, when everything is satisfied
     else:
         if tracking:
-            got.mecanum_stop()  # nothing found → stop
+            got.mecanum_stop()  # nothing found -> stop
         cv2.putText(
             data,
             "No object found",
