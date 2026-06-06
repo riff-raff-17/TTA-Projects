@@ -18,26 +18,33 @@ from mediapipe.tasks.python.vision import RunningMode
 
 from helpers import get_direction, draw_overlay, download_model, MODEL_PATH
 
+from ugot import ugot
+
 
 # --- Robot functions ---
 def robot_forward():
     print("FORWARD")
+    got.mecanum_move_speed(direction=0, speed=20)
 
 
 def robot_backward():
     print("BACKWARD")
+    got.mecanum_move_speed(direction=1, speed=20)
 
 
 def robot_left():
     print("LEFT")
+    got.mecanum_turn_speed(turn=2, speed=45)
 
 
 def robot_right():
     print("RIGHT")
+    got.mecanum_turn_speed(turn=3, speed=45)
 
 
 def robot_stop():
     print("STOP")
+    got.mecanum_stop()
 
 
 def dispatch(direction):
@@ -55,6 +62,8 @@ def dispatch(direction):
 # --- Main loop ---
 INDEX_FINGER_TIP = 8
 
+got = ugot.UGOT()
+got.initialize("192.168.1.91")
 
 def main():
     download_model()
