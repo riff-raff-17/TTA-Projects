@@ -1,0 +1,9 @@
+[project]
+name = "opencv-basics"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.13"
+dependencies = [
+    "opencv-python>=4.13.0.92",
+    "ugot>=0.2.13",
+]
