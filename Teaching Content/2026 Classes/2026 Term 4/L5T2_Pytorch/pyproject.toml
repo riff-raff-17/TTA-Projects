@@ -1,0 +1,22 @@
+[project]
+name = "l5t2-pytorch"
+version = "0.1.0"
+description = "Add your description here"
+authors = [
+    { name = "Rafa", email = "65214797+riff-raff-17@users.noreply.github.com" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "ipykernel>=7.3.0",
+    "matplotlib>=3.11.2",
+    "numpy>=2.5.3",
+    "pip>=26.2.1",
+    "scikit-learn>=1.9.1",
+]
+
+[project.scripts]
+l5t2-pytorch = "l5t2_pytorch:main"
+
+[build-system]
+requires = ["uv_build>=0.12.17,<0.13.0"]
+build-backend = "uv_build"

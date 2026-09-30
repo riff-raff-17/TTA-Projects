@@ -1,0 +1,21 @@
+[project]
+name = "ntu-term-2"
+version = "0.1.0"
+description = "Add your description here"
+authors = [
+    { name = "Rafa", email = "65214797+riff-raff-17@users.noreply.github.com" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "ipykernel>=7.3.0",
+    "opencv-python>=5.0.0.93",
+    "pygame>=2.6.1",
+    "ugot>=0.2.13",
+]
+
+[project.scripts]
+ntu-term-2 = "ntu_term_2:main"
+
+[build-system]
+requires = ["uv_build>=0.12.17,<0.13.0"]
+build-backend = "uv_build"

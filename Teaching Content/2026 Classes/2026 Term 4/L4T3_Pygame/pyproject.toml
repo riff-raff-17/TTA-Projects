@@ -1,0 +1,18 @@
+[project]
+name = "l4t3-pygame"
+version = "0.1.0"
+description = "Add your description here"
+authors = [
+    { name = "Rafa", email = "65214797+riff-raff-17@users.noreply.github.com" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "pygame>=2.6.1",
+]
+
+[project.scripts]
+l4t3-pygame = "l4t3_pygame:main"
+
+[build-system]
+requires = ["uv_build>=0.12.10,<0.13.0"]
+build-backend = "uv_build"
