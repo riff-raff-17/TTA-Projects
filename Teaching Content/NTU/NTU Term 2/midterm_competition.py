@@ -5,8 +5,6 @@ import cv2
 import numpy as np
 from ugot import ugot
 
-import video_link
-
 # --- CONSTANTS TO CHANGE ---
 # Robot connection
 ROBOT_IP = "192.168.1.204"
@@ -19,8 +17,8 @@ PICKUP_DELAY = 1  # Seconds to wait after each step of pickup()
 PUTDOWN_DELAY = 1  # Seconds to wait after each step of putdown()
 
 # Line following constants
-LINE_SPEED = 20
-LINE_TURN_GAIN = 0.25  # Turn speed per pixel of line offset
+LINE_SPEED = 30
+LINE_TURN_GAIN = 0.3  # Turn speed per pixel of line offset
 LINE_MISSED_FRAMES_TO_STOP = 3  # Frames in a row with no line before switching
 
 # Face approach constants
@@ -37,9 +35,6 @@ got.initialize(ROBOT_IP)
 got.load_models(["line_recognition", "face_recognition"])
 got.set_track_recognition_line(0)
 got.open_camera()
-
-# Set only when config_gui.py runs this script: the video then shows in the GUI
-video = video_link.sender_from_env()
 
 
 def pickup():
@@ -135,10 +130,7 @@ def main():
         nparr = np.frombuffer(frame, np.uint8)
         data = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
 
-        if video:
-            video.send(frame)
-        else:
-            cv2.imshow("Robot Feed", data)
+        cv2.imshow("Robot Feed", data)
 
         if state == "line following":
             line_type = line_follow(speed=LINE_SPEED, turn_gain=LINE_TURN_GAIN)
@@ -190,7 +182,6 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print("Stopped")
     finally:
-        # However the run ends, stop the wheels: otherwise the robot keeps its last
-        # motion. Wheels first, so a window error can't prevent it
-        got.mecanum_stop()
+        # However the run ends, stop the wheels: otherwise the robot keeps its last motion
         cv2.destroyAllWindows()
+        got.mecanum_stop()
